@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace Cryptounity\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
