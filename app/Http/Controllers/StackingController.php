@@ -18,7 +18,7 @@ class StackingController extends Controller
     public function index() {
         $user = auth()->user();
         $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
-
+        
         if(!$wallet) {
             session()->flash('alert',[
                 'level' => 'danger',
@@ -26,11 +26,17 @@ class StackingController extends Controller
             ]);
             return redirect()->route('wallet');
         }
+        if(!$user->package) {
+            session()->flash('alert',[
+                'level' => 'danger',
+                'msg' => 'Please Add package first'
+            ]);
+            return redirect()->route('package.index');
+        }
         $stackings = $user->stackings()->where('status','active')->get();
         return view('stacking.index',[
             'stackings' => $stackings,
             'user' => $user
-            
         ]);
     }
 
