@@ -22,7 +22,9 @@
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="">Amount</label>
-                            <small>Maximum: 100</small>
+                            @if(!empty($user->package))
+                            <small>Maximum: {{ ($user->package->max_deposit <= 0) ? 'Unlimited' : number_format($user->package->max_deposit) }}</small>
+                            @endif
                             <input type="text" name="amount" class="form-control" placeholder="">
                         </div>
                     

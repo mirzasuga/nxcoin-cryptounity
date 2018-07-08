@@ -3,6 +3,7 @@
 namespace Cryptounity\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Cryptounity\Bonus;
 
 class DashboardController extends Controller
 {
@@ -10,6 +11,7 @@ class DashboardController extends Controller
         $user = auth()->user();
         $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
         $package = $user->package;
+        $bonus = Bonus::totalBonus($user->id);
         if( !$wallet ) {
             session()->flash('alert',[
                 'level' => 'danger',
@@ -29,7 +31,8 @@ class DashboardController extends Controller
         return view('dashboard.index',[
             'user' => $user,
             'wallet' => $wallet,
-            'package' => $package
+            'package' => $package,
+            'bonus' => $bonus
         ]);
     }
 }

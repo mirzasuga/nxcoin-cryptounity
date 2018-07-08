@@ -16,8 +16,18 @@
             <ul class="list-group">
                 <li class="list-group-item">Package: {{$package->name}}</li>
                 <li class="list-group-item">Name: {{$user->name}}</li>
-                <li class="list-group-item">Stacking Coin: {{ number_format(10000) }}</li>
-                <li class="list-group-item">Profit: {{ number_format(100) }}</li>
+                <li class="list-group-item">Stacking Coin: {{ number_format($user->totalStack()) }}</li>
+                <li class="list-group-item">
+                    <div class="row">
+                    <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+                        Bonus: <strong>{{ number_format($bonus) }}</strong> NXCC   
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <a href="{{ route('bonus.taking') }}" class="btn btn-primary">Take Bonus</a>
+                    </div>
+                    </div>
+                    
+                </li>
             </ul>
             
         </div>

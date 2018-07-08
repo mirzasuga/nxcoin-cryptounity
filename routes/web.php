@@ -62,4 +62,14 @@ Route::group(['middleware' => 'auth'], function() {
         'uses' => 'StackingController@terminate',
         'as' => 'stacking.terminate'
     ]);
+
+    Route::get('transactions',[
+        'uses' => 'TransactionController@index',
+        'as' => 'transaction'
+    ]);
+
+    Route::get('bonus/taking',[
+        'uses' => 'BonusController@take',
+        'as' => 'bonus.taking'
+    ]);
 });

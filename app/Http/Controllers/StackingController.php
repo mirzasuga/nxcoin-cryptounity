@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Cryptounity\Wallet;
 use Cryptounity\Stacking;
 use Cryptounity\Transaction;
+use Cryptounity\Bonus;
 
 use Cryptounity\Service\NxccWallet;
 use Cryptounity\Service\NxccApiService;
@@ -28,6 +29,7 @@ class StackingController extends Controller
         $stackings = $user->stackings()->where('status','active')->get();
         return view('stacking.index',[
             'stackings' => $stackings,
+            'user' => $user
             
         ]);
     }
@@ -114,22 +116,22 @@ class StackingController extends Controller
             if( $userUpline->user_level == "Promotor" ) {
                 // send bonus to user upline
                 $cryptoUser = Wallet::where(['address' => $userUpline->data->wallet_coin])->first();
+                $cryptoUser = $cryptoUser->user;
                 if($cryptoUser) {
-
+                    
                     $bonusSent = $nxccApiService->sendBonus($userUpline->data,$amount,$userUpline->user_level);
-                    if( !$bonusSent ) {
-                        session()->flash('alert',[
-                            'level' => 'danger',
-                            'msg' => "Failed stacking, please contact web admin"
-                        ]);
-                        return redirect()->back();
-                    }
-                    $transaction = Transaction::create([
-                        'receiver_id' => $cryptoUser->id,
-                        'sender_id' => 1,
-                        'creator_id' => 0,
+                    // if( !$bonusSent ) {
+                    //     session()->flash('alert',[
+                    //         'level' => 'danger',
+                    //         'msg' => "Failed stacking, please contact web admin"
+                    //     ]);
+                    //     return redirect()->back();
+                    // }
+                    $transaction = Bonus::create([
+                        'user_id' => $cryptoUser->id,
                         'amount' => $bonusSent,
                         'type' => 'referral_bonus',
+                        'status' => 'active',
                         'notes' => 'Referral Bonus',
                     ]);
 

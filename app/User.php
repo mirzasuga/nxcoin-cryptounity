@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Cryptounity\Wallet;
 use Cryptounity\Package;
 use Cryptounity\Stacking;
+use Cryptounity\Transaction;
 use Cryptounity\Service\WalletService;
 
 use DB;
@@ -65,5 +66,24 @@ class User extends Authenticatable
             'status' => 'active'
         ])->sum('amount');
         return $total;
+    }
+
+    public function receive() {
+        return $this->hasMany(Transaction::class, 'receiver_id');
+    }
+    public function sent() {
+        return $this->hasMany(Transaction::class, 'sender_id');
+    }
+    public function transactions() {
+        return Transaction::where('receiver_id',$this->id)->orWhere('sender_id',$this->id)->orderBy('created_at','desc');
+    }
+    public function totalProfit() {
+        $profit = DB::table('transactions')->where([
+            'receiver_id' => $this->id,
+            'type' => 'referral_bonus'
+        ])->orWhere([
+            'receiver_id' => $this->id,
+            'type' => 'daily_earnings'
+        ])->sum('amount');
     }
 }

@@ -61,7 +61,7 @@ class NxccApiService
         $senderAddress = env('ADMIN_NXCC_WALLET_ADDRESS');
         $senderKey = encrypt(env('ADMIN_NXCC_WALLET_KEY'));
 
-        $nxccWallet = new NxccWallet($senderAddress, $receiverAddress, $senderKey);
+        // $nxccWallet = new NxccWallet($senderAddress, $receiverAddress, $senderKey);
         $bonusPercent = 0;
         switch ($level) {
             case 'Promotor':
@@ -73,9 +73,9 @@ class NxccApiService
         }
         $amount = $stacking_amount * $bonusPercent / 100;
 
-        if( !$nxccWallet->credit($amount) ) {
-            return false;
-        }
+        // if( !$nxccWallet->credit($amount) ) {
+        //     return false;
+        // }
         return $amount;
 
     }
