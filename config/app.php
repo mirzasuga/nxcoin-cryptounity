@@ -156,9 +156,11 @@ return [
          */
         Cryptounity\Providers\AppServiceProvider::class,
         Cryptounity\Providers\AuthServiceProvider::class,
+        Ixudra\Curl\CurlServiceProvider::class,
         // Cryptounity\Providers\BroadcastServiceProvider::class,
         Cryptounity\Providers\EventServiceProvider::class,
         Cryptounity\Providers\RouteServiceProvider::class,
+        Cryptounity\Providers\WalletServiceProvider::class,
 
     ],
 
@@ -208,7 +210,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Curl' => Ixudra\Curl\Facades\Curl::class,
+        'Carbon' => Carbon\Carbon::class,
     ],
 
 ];

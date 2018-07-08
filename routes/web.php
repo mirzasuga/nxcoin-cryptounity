@@ -18,3 +18,48 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(['middleware' => 'auth'], function() {
+
+    Route::get('package',[
+
+        'uses' => 'PackageController@index',
+        'as' => 'package.index'
+
+    ]);
+    Route::post('package/subscribe', [
+        'uses' => 'PackageController@subscribe',
+        'as' => 'package.subscribe'
+    ]);
+
+    Route::get('dashboard',[
+        'uses' => 'DashboardController@index',
+        'as' => 'dashboard'
+    ]);
+
+    Route::get('wallet', [
+        'uses' => 'WalletController@index',
+        'as' => 'wallet'
+    ]);
+    Route::post('wallet', [
+        'uses' => 'WalletController@create',
+        'as' => 'wallet.create'
+    ]);
+    Route::post('wallet/update', [
+        'uses' => 'WalletController@update',
+        'as' => 'wallet.update'
+    ]);
+
+    Route::get('stacking', [
+        'uses' => 'StackingController@index',
+        'as' => 'stacking'
+    ]);
+    Route::post('stacking', [
+        'uses' => 'StackingController@create',
+        'as' => 'stacking.create'
+    ]);
+    Route::get('stacking/terminate/{stackId}', [
+        'uses' => 'StackingController@terminate',
+        'as' => 'stacking.terminate'
+    ]);
+});
