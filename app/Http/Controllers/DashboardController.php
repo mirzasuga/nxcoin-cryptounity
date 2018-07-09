@@ -12,11 +12,11 @@ class DashboardController extends Controller
         $user = auth()->user();
         $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
         $package = $user->package;
-        $user = User::where('id',12)->first();
+        
         // $parents = $user->deepParent(3,$user);
         
         
-        $downline = $user->downline(2);
+        
         
         
         // $tree = $user->buildTree($downline,'referral_id','id',2);
