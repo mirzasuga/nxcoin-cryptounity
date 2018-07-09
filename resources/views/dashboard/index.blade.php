@@ -42,7 +42,6 @@
 
 @section('incJs')
 <script>
-var mydata = JSON.parse(@json($downline));
 
 </script>
 @endsection

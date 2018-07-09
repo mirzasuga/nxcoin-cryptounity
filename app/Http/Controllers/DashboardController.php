@@ -12,15 +12,6 @@ class DashboardController extends Controller
         $user = auth()->user();
         $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
         $package = $user->package;
-        
-        // $parents = $user->deepParent(3,$user);
-        
-        
-        
-        
-        
-        // $tree = $user->buildTree($downline,'referral_id','id',2);
-        //$tree = $user->buildTree($downline, 'id', 'referral_id',$user->id);
         $bonus = Bonus::totalBonus($user->id);
         if( !$wallet ) {
             session()->flash('alert',[
@@ -43,7 +34,7 @@ class DashboardController extends Controller
             'wallet' => $wallet,
             'package' => $package,
             'bonus' => $bonus,
-            'downline' => json_encode($downline)
+            
         ]);
     }
 }

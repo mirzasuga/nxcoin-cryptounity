@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Cryptounity\User;
 
 use DB;
+use Cryptounity\Transaction;
 class Bonus extends Model
 {
     protected $fillable = [
