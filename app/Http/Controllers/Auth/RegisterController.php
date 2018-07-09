@@ -92,9 +92,9 @@ class RegisterController extends Controller
         if($referral) {
             $data['referral_id'] = $referral->id;
         } else {
-            $data['referral_id'] = 1;
+            $data['referral_id'] = env('ADMIN_ID');
         }
-        $referral = User::where('username','mirza')->first(); //USER OBJECT
+        $referral = User::where('username',env('ADMIN_ID'))->first(); //USER OBJECT
         
         $this->validator($data)->validate();
 

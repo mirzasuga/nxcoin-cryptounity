@@ -29,7 +29,7 @@ class Registered
             $parent->members += 1;
             $parent->save();
         }
-        $refId = $this->referral->id;
+        //$refId = $this->referral->id;
 
     }
 
