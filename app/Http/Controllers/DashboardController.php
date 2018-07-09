@@ -4,6 +4,7 @@ namespace Cryptounity\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Cryptounity\Bonus;
+use Cryptounity\User;
 
 class DashboardController extends Controller
 {
@@ -11,6 +12,15 @@ class DashboardController extends Controller
         $user = auth()->user();
         $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
         $package = $user->package;
+        $user = User::where('id',12)->first();
+        // $parents = $user->deepParent(3,$user);
+        
+        
+        $downline = $user->downline(2);
+        
+        
+        // $tree = $user->buildTree($downline,'referral_id','id',2);
+        //$tree = $user->buildTree($downline, 'id', 'referral_id',$user->id);
         $bonus = Bonus::totalBonus($user->id);
         if( !$wallet ) {
             session()->flash('alert',[
@@ -32,7 +42,8 @@ class DashboardController extends Controller
             'user' => $user,
             'wallet' => $wallet,
             'package' => $package,
-            'bonus' => $bonus
+            'bonus' => $bonus,
+            'downline' => json_encode($downline)
         ]);
     }
 }

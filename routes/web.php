@@ -73,4 +73,15 @@ Route::group(['middleware' => 'auth'], function() {
         'uses' => 'BonusController@take',
         'as' => 'bonus.taking'
     ]);
+
+    Route::get('profile',[
+        'uses' => 'ProfileController@index',
+        'as' => 'profile'
+    ]);
+
+    Route::get('affiliate',[
+        'uses' => 'AffiliateController@index',
+        'as' => 'affiliate'
+    ]);
+
 });

@@ -11,12 +11,21 @@ use Cryptounity\Package;
 use Cryptounity\Wallet;
 use Cryptounity\Service\NxccWallet;
 
-
+use Cryptounity\Stacking;
 
 class PackageController extends Controller
 {
     public function index() {
         $packages = Package::all();
+        $user = auth()->user();
+        $totalStack = $user->totalStack(NULL);
+        if($totalStack <= 0) {
+            session()->flash('alert',[
+                'level' => 'danger',
+                'msg' => 'You should stacking nxc coin first'
+            ]);
+            return redirect()->route('stacking');
+        }
         return view('package.index')->with([
             'packages' => $packages
         ]);
@@ -26,21 +35,31 @@ class PackageController extends Controller
 
         $packageId = $request->package_id;
         $user = auth()->user();
-        $packageUser = $user->package()->first();
+        // $packageUser = $user->package()->first();
 
-        if($packageUser) {
+        // if($packageUser) {
+        //     session()->flash('alert',[
+        //         'level' => 'danger',
+        //         'msg' => 'Already subscribe'
+        //     ]);
+        //     return redirect()->back();
+        // }
+
+        $package = Package::findOrFail($packageId);
+
+        $totalStack = $user->totalStack('active');
+
+        if( $totalStack < $package->min_deposit ) {
+            $need = $package->min_deposit - $totalStack;
             session()->flash('alert',[
                 'level' => 'danger',
-                'msg' => 'Already subscribe'
+                'msg' => 'your deposit is not enough, please add '.number_format($need).' stacking to subscribe this package.'
             ]);
             return redirect()->back();
         }
 
-        $package = Package::findOrFail($packageId);
-
-        $package = Package::findOrFail($packageId);
         $walletUser = $user->wallets()->where(['code' => 'NXCC'])->first();
-
+        
         if(!$walletUser) {
             session()->flash('alert',[
                 'level' => 'danger',

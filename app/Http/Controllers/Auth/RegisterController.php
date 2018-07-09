@@ -7,6 +7,9 @@ use Cryptounity\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+//use Illuminate\Auth\Events\Registered;
+use Cryptounity\Events\Registered;
 
 class RegisterController extends Controller
 {
@@ -40,6 +43,15 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    public function showRegistrationForm(Request $request)
+    {
+        $reff = $request->ref;
+
+        return view('auth.register',[
+            'reff' => $reff
+        ]);
+    }
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -52,6 +64,7 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'username' => 'required|alpha_num|min:6|unique:users',
         ]);
     }
 
@@ -63,10 +76,33 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'username' => $data['username'],
             'password' => Hash::make($data['password']),
+            'referral_id' => $data['referral_id']
         ]);
+    }
+    public function register(Request $request)
+    {
+        $data = $request->all();
+        $referral = User::where('username',$request->referral_id)->first(); //USER OBJECT
+        if($referral) {
+            $data['referral_id'] = $referral->id;
+        } else {
+            $data['referral_id'] = 1;
+        }
+        $referral = User::where('username','mirza')->first(); //USER OBJECT
+        
+        $this->validator($data)->validate();
+
+        event(new Registered($user = $this->create($data), $referral));
+
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+                        ?: redirect($this->redirectPath());
     }
 }

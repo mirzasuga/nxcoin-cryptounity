@@ -26,13 +26,13 @@ class StackingController extends Controller
             ]);
             return redirect()->route('wallet');
         }
-        if(!$user->package) {
-            session()->flash('alert',[
-                'level' => 'danger',
-                'msg' => 'Please Add package first'
-            ]);
-            return redirect()->route('package.index');
-        }
+        // if(!$user->package) {
+        //     session()->flash('alert',[
+        //         'level' => 'danger',
+        //         'msg' => 'Please Add package first'
+        //     ]);
+        //     return redirect()->route('package.index');
+        // }
         $stackings = $user->stackings()->where('status','active')->get();
         return view('stacking.index',[
             'stackings' => $stackings,
@@ -64,85 +64,14 @@ class StackingController extends Controller
             $nxccApiService = new NxccApiService($address, $privateKey);
 
             $nxccWallet = new NxccWallet($address, $receiverAddress, $privateKey);
-            $userLevel = $nxccApiService->userLevel();
-            $userUpline = $nxccApiService->getReferral();
-            
-            if( !$userLevel || !$userUpline ) {
-                session()->flash('alert',[
-                    'level' => 'danger',
-                    'msg' => "Failed stacking, please contact web admin"
-                ]);
-                return redirect()->back();
-            }
             
 
-            $pack = $user->package;
+            // $pack = $user->package;
             $amount = (float) $request->amount;
-            $min = $pack->min_deposit;
-            $max = $pack->max_deposit;
+            // $min = $pack->min_deposit;
+            // $max = $pack->max_deposit;
             $userStack = $user->totalStack() + $amount;
             
-            
-
-            if( $amount < $min ) {
-                session()->flash('alert',[
-                    'level' => 'danger',
-                    'msg' => "Total Stacking cannot less than $min"
-                ]);
-
-                return redirect()->back();
-            }
-            
-            if( $userStack > $max ) {
-                session()->flash('alert',[
-                    'level' => 'danger',
-                    'msg' => "Total Stacking cannot more than $max"
-                ]);
-
-                return redirect()->back();
-            }
-            
-            if( !$userLevel ) {
-
-                session()->flash('alert',[
-                    'level' => 'danger',
-                    'msg' => 'Stacking failed, please make sure wallet address valid'
-                ]);
-
-                return redirect()->back();
-            }
-            
-            
-            if( $userLevel->level != $user->level ) {
-
-                $user->level = $userLevel->level;
-                $user->save();
-            }
-
-            if( $userUpline->user_level == "Promotor" ) {
-                // send bonus to user upline
-                $cryptoUser = Wallet::where(['address' => $userUpline->data->wallet_coin])->first();
-                $cryptoUser = $cryptoUser->user;
-                if($cryptoUser) {
-                    
-                    $bonusSent = $nxccApiService->sendBonus($userUpline->data,$amount,$userUpline->user_level);
-                    // if( !$bonusSent ) {
-                    //     session()->flash('alert',[
-                    //         'level' => 'danger',
-                    //         'msg' => "Failed stacking, please contact web admin"
-                    //     ]);
-                    //     return redirect()->back();
-                    // }
-                    $transaction = Bonus::create([
-                        'user_id' => $cryptoUser->id,
-                        'amount' => $bonusSent,
-                        'type' => 'referral_bonus',
-                        'status' => 'active',
-                        'notes' => 'Referral Bonus',
-                    ]);
-
-                }
-            }
 
             $stop_at = new Carbon();
             $stop_at = $stop_at->addDays(30);
@@ -152,8 +81,8 @@ class StackingController extends Controller
                 'amount' => $amount,
                 'status' => 'active',
                 'type' => 'credit',
-                'termin_fee_percent' => $pack->termination_fee,
-                'termin_fee_amount' => $amount * $pack->termination_fee  / 100,
+                'termin_fee_percent' => 0,
+                'termin_fee_amount' => 0,
                 'stop_at' => $stop_at,
             ]);
             $transaction = Transaction::create([
@@ -164,6 +93,9 @@ class StackingController extends Controller
                 'type' => 'debit',
                 'notes' => 'Stacking',
             ]);
+            
+            Bonus::send($user, $amount);
+
             if( !$stacking || !$transaction) {
 
                 session()->flash('alert',[
@@ -184,7 +116,12 @@ class StackingController extends Controller
             Log::info('User Stacking| '.$user->id.' Amount: '.$amount.' User level: '.$user->level);
 
         } catch(\Exception $e) {
-            die($e->getMessage());
+            session()->flash('alert',[
+                'level' => 'danger',
+                'msg' => 'Stacking failed, please contact web admin'
+            ]);
+            Log::info($e->getMessage());
+            return redirect()->back();
         }
         session()->flash('alert',[
             'level' => 'success',
