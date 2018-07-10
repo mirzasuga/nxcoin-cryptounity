@@ -42,7 +42,7 @@
         <div class="container-fluid d-flex align-items-center justify-content-between">
           <div class="navbar-header">
             <!-- Navbar Header--><a href="index.html" class="navbar-brand">
-              <div class="brand-text brand-big visible text-uppercase"><strong class="text-primary">Cryptounity</strong><strong></strong></div>
+              <div class="brand-text brand-big visible text-uppercase"><img src="https://cryptounity.co/img/logo.png" alt="" srcset=""></div>
               <div class="brand-text brand-sm"><strong class="text-primary">C</strong><strong>U</strong></div></a>
             <!-- Sidebar Toggle Btn-->
             <button class="sidebar-toggle"><i class="fa fa-long-arrow-left"></i></button>
