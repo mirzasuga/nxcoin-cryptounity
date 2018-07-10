@@ -20,6 +20,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="home">
+                    Home
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="package">
                     Packages
                 </a>
@@ -27,12 +32,6 @@
             <li class="nav-item">
                 <a class="nav-link" href="stacking">
                     Stacking
-                </a>
-            </li>
-            
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('dashboard') }}">
-                    Dashboard
                 </a>
             </li>
             <li class="nav-item">
