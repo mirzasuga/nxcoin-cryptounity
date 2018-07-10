@@ -15,8 +15,8 @@
     <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
     <ul class="list-unstyled">
             <li class="nav-item">
-                <a class="nav-link" href="home">
-                <i class="icon-home"></i>Home
+                <a class="nav-link" href="dashboard">
+                <i class="icon-home"></i>Dashboard
                 </a>
             </li>
             <li class="nav-item">
