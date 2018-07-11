@@ -47,7 +47,7 @@
                                 <th>ID</th>
                                 <th>Amount</th>
                                 <th>Status</th>
-                                <th>Stop At</th>
+                                <!-- <th>Stop At</th> -->
                                 <th>Created At</th>
                                 <th>Action</th>
                             </tr>
@@ -58,7 +58,7 @@
                                 <td>{{ $stack->id }}</td>
                                 <td>{{ $stack->amount }}</td>
                                 <td>{{ $stack->status }}</td>
-                                <td>{{ $stack->stop_at }}</td>
+                                <!-- <td>{{ $stack->stop_at }}</td> -->
                                 <td>{{ $stack->created_at }}</td>
                                 <td>
                                     <a href="{{ route('stacking.terminate',['stackId' => $stack->id]) }}" class="btn btn-danger">Terminate</a>
