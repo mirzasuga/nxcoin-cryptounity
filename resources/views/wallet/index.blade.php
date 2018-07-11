@@ -57,11 +57,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="">Wallet Secret Key</label>
+                            <label for="">Your Password Nxcoin.io</label>
                             <input type="password" name="private_key" class="form-control" placeholder="">
                         </div>
-                        
-                    
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                         
@@ -70,15 +68,6 @@
                 </div>
                 
                 
-            </div>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <div class="card">
-                <div class="card-header">{{ $wallet->name }}</div>
-
-                <div class="card-body">
-                    
-                </div>
             </div>
         </div>
         @endif
