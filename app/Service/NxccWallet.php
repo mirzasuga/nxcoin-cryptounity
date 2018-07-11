@@ -81,7 +81,7 @@ class NxccWallet extends BaseWallet
         
         $response = json_decode(Curl::to($url)->get());
         $this->response = $response;
-        if( !$response->success ) {
+        if( !$response ) {
             $this->setLogError();
             return false;
         }
@@ -109,8 +109,12 @@ class NxccWallet extends BaseWallet
     }
 
     private function setLogError() {
-        $response = 'RESPONSE CODE: '.$this->response->code.'| RESPONSE MESSAGE: '.$this->response->msg;
-        $message = 'FAILED CALL|ADDRESS: '.$this->address.'||'.$response;
+        if($this->response) {
+            $response = 'RESPONSE CODE: '.$this->response->code.'| RESPONSE MESSAGE: '.$this->response->msg;
+            $message = 'FAILED CALL|ADDRESS: '.$this->address.'||'.$response;
+        } else {
+            $message = 'CALL FAILED WITH NO RESPONSE';
+        }
         Log::error($message);
     }
 }
