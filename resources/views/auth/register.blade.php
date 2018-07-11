@@ -1,9 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            @if (Session::has('alert'))
+                <div class="alert alert-{{session()->get('alert')['level']}}" role="alert">
+                    {{ session()->get('alert')['msg'] }}
+                </div>
+            @endif
             <div class="card">
                 <div class="card-header">{{ __('Register') }}</div>
 
@@ -11,7 +17,7 @@
                     <form method="POST" action="{{ route('register') }}" aria-label="{{ __('Register') }}">
                         @csrf
                         
-                        <input type="hidden" name="referral_id" value="{{ $reff }}">
+                        
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
 
@@ -39,7 +45,14 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="referral" class="col-md-4 col-form-label text-md-right">Referral</label>
 
+                            <div class="col-md-6">
+                                <input id="referral_id" type="text" class="form-control" name="referral_id" value="{{ ($reff == NULL) ? env('ADMIN_USERNAME') : $reff  }}" autofocus>
+                            </div>
+                        </div>
+                        
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 

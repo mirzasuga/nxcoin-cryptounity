@@ -88,15 +88,33 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $data = $request->all();
-        $referral = User::where('username',$request->referral_id)->first(); //USER OBJECT
-        if($referral) {
-            $data['referral_id'] = $referral->id;
-        } else {
-            $data['referral_id'] = env('ADMIN_ID');
-        }
-        $referral = User::where('username',env('ADMIN_ID'))->first(); //USER OBJECT
-        
         $this->validator($data)->validate();
+
+        if( $request->referral_id ) {
+            
+            $referral = User::where('username',$request->referral_id)->first(); //USER OBJECT
+            if( !$referral ) {
+                session()->flash('alert',[
+                    'level' => 'danger',
+                    'msg' => 'Referral username not found.'
+                ]);
+                return redirect()->back();
+            }
+
+        } else {
+
+            $referral = User::where('username',env('ADMIN_USERNAME'))->first(); //USER OBJECT
+        }
+
+
+        // if($referral) {
+        //     $data['referral_id'] = $referral->id;
+        // } else {
+        //     $data['referral_id'] = env('ADMIN_ID');
+        // }
+        // $referral = User::where('username',env('ADMIN_ID'))->first(); //USER OBJECT
+        
+        $data['referral_id'] = $referral->id;
 
         event(new Registered($user = $this->create($data), $referral));
 
