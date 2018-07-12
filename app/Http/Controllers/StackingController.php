@@ -161,7 +161,7 @@ class StackingController extends Controller
 
         $address = env('ADMIN_NXCC_WALLET_ADDRESS'); //admin wallet address
         $key = env('ADMIN_NXCC_WALLET_KEY');
-        $privateKey = encrypt($key); // admin wallet key
+        $privateKey = $key; // admin wallet key
         
         $receiverAddress = $auth->wallets()->where(['code' => 'NXCC'])->first()->address;
         $nxccWallet = new NxccWallet($address, $receiverAddress, $privateKey);
