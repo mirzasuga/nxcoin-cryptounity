@@ -26,7 +26,9 @@ class Stacking extends Model
     }
 
     
-
+    public function scopeStatus($query, $status) {
+        return $query->where('status',$status);
+    }
     // public function terminate() {
         
     // }

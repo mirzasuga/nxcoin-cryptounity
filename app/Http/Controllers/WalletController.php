@@ -60,10 +60,14 @@ class WalletController extends Controller
     public function update(Request $request) {
         $address = $request->address;
         $privateKey = $request->private_key;
-        $wallet = Wallet::where(['address' => $address])->first();
-        $wallet->private_key = encrypt($privateKey);
+        //$wallet = Wallet::where(['address' => $address])->first();
+        $user = auth()->user();
+        $userwallet = $user->wallets()->where(['code' => 'NXCC'])->first();
+
+        $userwallet->address = $address;
+        $userwallet->private_key = encrypt($privateKey);
         
-        $wallet->save();
+        $userwallet->save();
 
         session()->flash('alert',[
             'level' => 'success',

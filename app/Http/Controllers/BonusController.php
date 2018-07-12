@@ -27,7 +27,7 @@ class BonusController extends Controller
         }
 
         $address = env('ADMIN_NXCC_WALLET_ADDRESS');
-        $key = encrypt(env('ADMIN_NXCC_WALLET_KEY'));
+        $key = env('ADMIN_NXCC_WALLET_KEY');
         $receiverAddress = $userWallet->address;
         $nxccWallet = new NxccWallet($address,$receiverAddress, $key);
         if(!$taked) {

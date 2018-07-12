@@ -2,7 +2,8 @@
 
 namespace Cryptounity\Http\Controllers;
 
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
+use Cryptounity\Http\Requests\StackingCreateRequest;
 use Cryptounity\Wallet;
 use Cryptounity\Stacking;
 use Cryptounity\Transaction;
@@ -13,8 +14,14 @@ use Cryptounity\Service\NxccApiService;
 use DB;
 use Carbon;
 use Log;
+use Auth;
 class StackingController extends Controller
 {
+
+    public function __construct() {
+        
+    }
+
     public function index() {
         $user = auth()->user();
         $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
@@ -40,10 +47,28 @@ class StackingController extends Controller
         ]);
     }
 
-    public function create(Request $request) {
-        DB::beginTransaction();
-        try {
+    public function create(StackingCreateRequest $request) {
+        $user = Auth::user();
+        //$canc = $user->can('create', Stacking::Class);
 
+        // $user->can('create-stacking', Stacking::class);
+
+        // if( !$user->can('createStacking') ) {
+
+        //     session()->flash('alert',[
+        //         'level' => 'danger',
+        //         'msg' => 'Please terminate your last staking first'
+        //     ]);
+
+        //     return redirect()->back();
+        // }
+
+        
+        $data = $request->validated();
+        
+        DB::beginTransaction();
+        
+            
             $user = auth()->user();
             
             $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
@@ -64,10 +89,22 @@ class StackingController extends Controller
             $nxccApiService = new NxccApiService($address, $privateKey);
 
             $nxccWallet = new NxccWallet($address, $receiverAddress, $privateKey);
+            $amount = (float) $request->amount;
+
             
+            $response = $nxccWallet->debit( $amount )->getResponse();
+            
+            if( !$response->success ) {
+                session()->flash('alert',[
+                    'level' => 'danger',
+                    'msg' => $response->msg
+                ]);
+                Log::info('User Stacking FAILED | USER ID:'.$user->id.' Email: '.$user->email.' Amount: '.$amount.' User level: '.$user->level);
+                return redirect()->back();
+            }
 
             // $pack = $user->package;
-            $amount = (float) $request->amount;
+            
             // $min = $pack->min_deposit;
             // $max = $pack->max_deposit;
             $userStack = $user->totalStack() + $amount;
@@ -105,25 +142,9 @@ class StackingController extends Controller
 
                 return redirect()->back();
             }
-            $response = $nxccWallet->debit( $amount )->getResponse();
-            if( !$response->success ) {
-                session()->flash('alert',[
-                    'level' => 'danger',
-                    'msg' => $response->msg
-                ]);
+            Log::info('User Stacking| USER ID:'.$user->id.' Email'.$user->email.' Amount: '.$amount.' User level: '.$user->level);
 
-                return redirect()->back();
-            }
-            Log::info('User Stacking| '.$user->id.' Amount: '.$amount.' User level: '.$user->level);
-
-        } catch(\Exception $e) {
-            session()->flash('alert',[
-                'level' => 'danger',
-                'msg' => 'Stacking failed, please contact web admin'
-            ]);
-            Log::info($e->getMessage());
-            return redirect()->back();
-        }
+        
         session()->flash('alert',[
             'level' => 'success',
             'msg' => 'Stacking success'

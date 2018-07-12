@@ -5,6 +5,12 @@ namespace Cryptounity\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
+
+use Cryptounity\User;
+
+use Cryptounity\Stacking;
+use Cryptounity\Policies\StackingPolicy;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -14,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'Cryptounity\Model' => 'Cryptounity\Policies\ModelPolicy',
+        Stakcing::class => StackingPolicy::class,
     ];
 
     /**
@@ -24,7 +31,9 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
+        Gate::define('create-stacking',function($user) {
+            
+        });
         //
     }
 }

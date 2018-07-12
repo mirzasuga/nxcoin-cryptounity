@@ -80,6 +80,7 @@ class NxccWallet extends BaseWallet
         ];
         $query = base64_encode(http_build_query($params));
         $url = $this->apiEndpoint.'/wallet/credit?v='.$query;
+        
         $response = json_decode(Curl::to($url)->get());
         $this->response = $response;
         Log::info(__METHOD__.' FROM: '.$this->address.' TO: '.$this->receiverAddress.print_r($response));
