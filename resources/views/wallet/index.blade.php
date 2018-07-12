@@ -21,13 +21,13 @@
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="">Address</label>
-                            <input type="text" name="address" readonly class="form-control" value="{{ $wallet->address }}">
+                            <input type="text" name="address" class="form-control" value="{{ $wallet->address }}">
                         </div>
-                        <!-- <div class="form-group">
-                            <label for="">Wallet Secret Key</label>
+                        <div class="form-group">
+                            <label for="">New Wallet Secret Key</label>
                             <input type="password" name="private_key" class="form-control" placeholder="">
-                        </div> -->
-                        <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </form>
                 </div>
             </div>

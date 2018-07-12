@@ -59,12 +59,14 @@ class NxccWallet extends BaseWallet
         
         $response = json_decode(Curl::to($url)->get());
         $this->response = $response;
-        if( !$response->success ) {
+        if( !$response ) {
             $this->setLogError();
-            return false;
         }
-        return true;
+        return $this;
 
+    }
+    public function getResponse() {
+        return $this->response;
     }
 
     //credit from admin to receiver
@@ -78,16 +80,13 @@ class NxccWallet extends BaseWallet
         ];
         $query = base64_encode(http_build_query($params));
         $url = $this->apiEndpoint.'/wallet/credit?v='.$query;
-        
         $response = json_decode(Curl::to($url)->get());
         $this->response = $response;
         Log::info(__METHOD__.' FROM: '.$this->address.' TO: '.$this->receiverAddress.print_r($response));
         if( !$response ) {
             $this->setLogError();
-            return false;
         }
-        return true;
-
+        return $this;
     }
 
     public function validate() {
@@ -109,11 +108,14 @@ class NxccWallet extends BaseWallet
         return true;
     }
 
-    private function setLogError() {
+    public function setLogError() {
         if($this->response) {
             $response = 'RESPONSE CODE: '.$this->response->code.'| RESPONSE MESSAGE: '.$this->response->msg;
             $message = 'FAILED CALL|ADDRESS: '.$this->address.'||'.$response;
         } else {
+            $this->response = json_decode("[{
+                'success':false,'code':'unexpected','msg':'nxcoin is not response'
+            }]");
             $message = 'CALL FAILED WITH NO RESPONSE';
         }
         Log::error($message);

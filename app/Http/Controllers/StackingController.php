@@ -105,10 +105,11 @@ class StackingController extends Controller
 
                 return redirect()->back();
             }
-            if(!$nxccWallet->debit( $amount ) ) {
+            $response = $nxccWallet->debit( $amount )->getResponse();
+            if( !$response->success ) {
                 session()->flash('alert',[
                     'level' => 'danger',
-                    'msg' => 'Stacking failed, please contact web admin'
+                    'msg' => $response->msg
                 ]);
 
                 return redirect()->back();
@@ -166,11 +167,15 @@ class StackingController extends Controller
         
         $receiverAddress = $auth->wallets()->where(['code' => 'NXCC'])->first()->address;
         $nxccWallet = new NxccWallet($address, $receiverAddress, $privateKey);
-        if(!$nxccWallet->credit($amount)) {
+        
+        $response = $nxccWallet->credit($amount)->getResponse();
+        
+        
+        if(!$response->success) {
 
             session()->flash('alert',[
                 'level' => 'danger',
-                'msg' => 'Failed to terminate, please contact web admin'
+                'msg' => $response->msg
             ]);
             return redirect()->route('stacking');
 
