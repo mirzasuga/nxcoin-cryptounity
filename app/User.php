@@ -127,7 +127,7 @@ class User extends Authenticatable
                 'id' => $p->id,
                 'referral_id' => $p->referral_id,
                 'username' => $p->username,
-                'omset' => $p->totalStack('activ')
+                'omset' => $p->totalStack('active')
             ];
 
         }
