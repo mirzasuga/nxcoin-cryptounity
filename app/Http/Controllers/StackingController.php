@@ -148,7 +148,8 @@ class StackingController extends Controller
 
         
         $stack->status = 'inactive';
-        $amount = $stack->amount - $stack->termin_fee_amount;
+        $terminFee = $stack->amount * 5 / 100;
+        $amount = $stack->amount - $terminFee;
         $stack->save();
         Transaction::create([
             'receiver_id' => $auth->id,
