@@ -27,7 +27,7 @@
             LEADERSHIP: 
             <h6>{{ strtoupper($user->level) }}</h6>
             <div class="star-rating">
-                @for($i=0; $i < $leadership; $i++)
+                @for($i=1; $i < $leadership; $i++)
                 <span class="fa fa-star"></span>
                 @endfor
             </div>
