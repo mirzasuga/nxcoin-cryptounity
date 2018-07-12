@@ -81,7 +81,7 @@ class NxccWallet extends BaseWallet
         
         $response = json_decode(Curl::to($url)->get());
         $this->response = $response;
-        Log::info(__METHOD__.' FROM: '.$this->address.' TO: '.$this->receiverAddress.$response);
+        Log::info(__METHOD__.' FROM: '.$this->address.' TO: '.$this->receiverAddress.print_r($response));
         if( !$response ) {
             $this->setLogError();
             return false;
