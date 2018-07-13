@@ -49,21 +49,13 @@ class StackingController extends Controller
 
     public function create(StackingCreateRequest $request) {
         $user = Auth::user();
-        //$canc = $user->can('create', Stacking::Class);
 
-        // $user->can('create-stacking', Stacking::class);
+        if( !$user->can('create-stacking', Stacking::class) ) {
+            
 
-        // if( !$user->can('createStacking') ) {
+            return redirect()->back();
+        }
 
-        //     session()->flash('alert',[
-        //         'level' => 'danger',
-        //         'msg' => 'Please terminate your last staking first'
-        //     ]);
-
-        //     return redirect()->back();
-        // }
-
-        
         $data = $request->validated();
         
         DB::beginTransaction();
@@ -169,43 +161,43 @@ class StackingController extends Controller
         }
 
         
-        $stack->status = 'inactive';
+        $stack->status = 'pending-terminate';
         $terminFee = $stack->amount * 5 / 100;
         $amount = $stack->amount - $terminFee;
         $stack->save();
-        Transaction::create([
-            'receiver_id' => $auth->id,
-            'sender_id' => 1,
-            'creator_id' => $auth->id,
-            'amount' => $amount,
-            'type' => 'credit',
-            'notes' => 'Stacking Termination',
-        ]);
+        // Transaction::create([
+        //     'receiver_id' => $auth->id,
+        //     'sender_id' => 1,
+        //     'creator_id' => $auth->id,
+        //     'amount' => $amount,
+        //     'type' => 'credit',
+        //     'notes' => 'Stacking Termination',
+        // ]);
 
-        $address = env('ADMIN_NXCC_WALLET_ADDRESS'); //admin wallet address
-        $key = env('ADMIN_NXCC_WALLET_KEY');
-        $privateKey = $key; // admin wallet key
+        // $address = env('ADMIN_NXCC_WALLET_ADDRESS'); //admin wallet address
+        // $key = env('ADMIN_NXCC_WALLET_KEY');
+        // $privateKey = $key; // admin wallet key
         
-        $receiverAddress = $auth->wallets()->where(['code' => 'NXCC'])->first()->address;
-        $nxccWallet = new NxccWallet($address, $receiverAddress, $privateKey);
+        // $receiverAddress = $auth->wallets()->where(['code' => 'NXCC'])->first()->address;
+        // $nxccWallet = new NxccWallet($address, $receiverAddress, $privateKey);
         
-        $response = $nxccWallet->credit($amount)->getResponse();
+        // $response = $nxccWallet->credit($amount)->getResponse();
         
         
-        if(!$response->success) {
+        // if(!$response->success) {
 
-            session()->flash('alert',[
-                'level' => 'danger',
-                'msg' => $response->msg
-            ]);
-            return redirect()->route('stacking');
+        //     session()->flash('alert',[
+        //         'level' => 'danger',
+        //         'msg' => $response->msg
+        //     ]);
+        //     return redirect()->route('stacking');
 
-        }
+        // }
 
         DB::commit();
         session()->flash('alert',[
             'level' => 'success',
-            'msg' => 'Termination success'
+            'msg' => 'Termination success, We will transfer your balance after 2 days.'
         ]);
         return redirect()->route('stacking');
 

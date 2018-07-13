@@ -12,6 +12,7 @@ use Cryptounity\Transaction;
 use Cryptounity\Service\WalletService;
 
 use DB;
+use Log;
 
 class User extends Authenticatable
 {
@@ -112,25 +113,29 @@ class User extends Authenticatable
     public function deepParent($deep, $user) {
         $parents = [];
         for( $i=1; $i <= $deep; $i++ ) {
-
-            $parent = $user->parent()->first();
-            if( !empty($parent) && $parent->referral_id != 0 ) {
-                $parents[] = $parent;
-                $user = $parent;
-                
+            if( $user ) {
+                if( $user->id == $user->referral_id ) {
+                    break;
+                }
+                $parent = $user->parent()->first();
+                if( !empty($parent) && $parent->referral_id != 0 ) {
+                    $parents[] = $parent;
+                    $user = $parent;
+                    
+                }
             }
 
         }
         
-        foreach( $parents as $p) {
-            $data[] = [
-                'id' => $p->id,
-                'referral_id' => $p->referral_id,
-                'username' => $p->username,
-                'omset' => $p->totalStack('active')
-            ];
+        // foreach( $parents as $p) {
+        //     $data[] = [
+        //         'id' => $p->id,
+        //         'referral_id' => $p->referral_id,
+        //         'username' => $p->username,
+        //         'omset' => $p->totalStack('active')
+        //     ];
 
-        }
+        // }
         $this->parents = $parents;
         return $this;
     }
@@ -235,6 +240,52 @@ class User extends Authenticatable
 
             }
         }
+    }
+
+    /**
+     * Jika user tidak stacking selama 3 hari
+     * maka pindahkan downline ke atas referral user ini
+     */
+    public function removeFromTree() {
+
+        
+        if( $this->id == 1 ) {return;}
+
+        DB::beginTransaction();
+
+        /**
+         * get referral_id from this user;
+         */
+        $moveTo = $this->referral_id;
+
+        $downlines = $this->line()->get();
+        if( count($downlines) > 0 ) {
+
+            $parent = $this->parent()->first();
+
+            while ($this->parent) {
+                
+            }
+
+            $directDownlineId = [];
+            foreach( $downlines as $line ) {
+
+                $directDownlineId[] = $line->id;
+
+            }
+            $directDownlineId = implode( ',',$directDownlineId );
+            $sql = "
+                UPDATE users set referral_id='$moveTo' where id in ($directDownlineId);
+            ";
+            
+            if(!DB::statement($sql)) {
+
+                Log::error('FAILED REMOVE ID: '.$this->id.' FROM TREE ('.$directDownlineId.')');
+                return false;
+            }
+        }
+        DB::commit();
+        return true;
     }
 
     

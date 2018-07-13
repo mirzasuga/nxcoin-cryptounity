@@ -50,7 +50,7 @@
                             <td>{{ $line->email }}</td>
                             <td>
                                 <?php $star=$line->getStar(); ?>
-                                @for($i=0; $i<$star; $i++)
+                                @for($i=1; $i<$star; $i++)
                                     <span class="fa fa-star" style="font-size:1.5em; color:gold;"></span>
                                 @endfor
                             </td>

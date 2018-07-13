@@ -32,7 +32,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Gate::define('create-stacking',function($user) {
-            
+            $policy = new StackingPolicy($user);
+            return $policy->create($user);
         });
         //
     }

@@ -54,6 +54,7 @@ class Bonus extends Model
             
         }
         $parents = $parents->parents;
+        //dd($parents);
         $i=0;
         foreach( $useConfig['shares'] as $share ) {
             
@@ -66,10 +67,14 @@ class Bonus extends Model
                     'notes' => $user->username." Stacking",
                     'status' => 'active'
                 ]);
+            } else {
+                break;
             }
             $i++;
             
         }
+
+        return true;
         
     }
 }
