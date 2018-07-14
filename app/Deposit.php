@@ -4,19 +4,23 @@ namespace Cryptounity;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 use Cryptounity\User;
 
-class Profit extends Model
+class Deposit extends Model
 {
+
     protected $fillable = [
         'user_id',
-        'type',
         'amount',
         'status',
-        'notes',
+        'status',
+        'type',
+        'fee',
+        'fee_amount'
     ];
 
     public function user() {
-
+        return $this->belongsTo(User::class,'user_id');
     }
 }

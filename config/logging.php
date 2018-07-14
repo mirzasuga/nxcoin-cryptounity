@@ -35,7 +35,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['single','slack_profit_member'],
         ],
 
         'single' => [
@@ -57,6 +57,13 @@ return [
             'username' => 'Laravel Log',
             'emoji' => ':boom:',
             'level' => 'critical',
+        ],
+        'slack_profit_member' => [
+            'driver' => 'slack',
+            'url' => env('SLACK_WH_PROFIT_REPORT'),
+            'username' => 'Get member profit daily',
+            'emoji' => ':boom:',
+            'level' => 'info',
         ],
 
         'stderr' => [
