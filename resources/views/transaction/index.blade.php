@@ -33,7 +33,7 @@
                         @foreach( $transactions as $trans )
                             <tr>
                                 <td>{{ $trans->id }}</td>
-                                <td>{{ number_format(round($trans->amount,2) ) }}</td>
+                                <td>{{ number_format($trans->amount,8,',','.') }}</td>
                                 <td>{{ ucwords($trans->sender->name) }}</td>
                                 <td>{{ ucwords($trans->user->name) }}</td>
                                 <td>{{ $trans->notes }}</td>

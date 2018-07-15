@@ -145,7 +145,7 @@ class ProfitCommand extends Command
     }
 
     private function calcOmset( User $user ) {
-
+        
         $downlines = $user->downline( $user->id );
         $omsetGlobal = $this->calcOmset( $downlines );
         $omset = 0;
