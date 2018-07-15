@@ -16,3 +16,19 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('member/total', [
+    'uses' => 'Api\MemberController@total',
+    'as' => 'api.member.total'
+]);
+
+Route::get('deposit/total', [
+    'uses' => 'Api\DepositController@total',
+    'as' => 'api.deposit.total'
+]);
+
+Route::get('profit/total', [
+    'uses' => 'Api\ProfitController@total',
+    'as' => 'api.profit.total'
+]);

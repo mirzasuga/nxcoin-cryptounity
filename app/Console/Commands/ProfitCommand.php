@@ -37,7 +37,6 @@ class ProfitCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        Log::channel('stack')->info('Start to geting Profit members command');
     }
 
     /**
@@ -89,14 +88,16 @@ class ProfitCommand extends Command
                 'amount' => $profitHarian,
                 'type' => 'profit_harian',
                 'notes' => 'Profit Harian',
-                ];
+                'created_at' => date('Y-m-d H:i:s')
+            ];
             $profits = [
                     'user_id' => $user->id,
                     'type' => 'profit_harian',
                     'amount' => $profitHarian,
                     'status' => 'received',
-                    'notes' => 'Profit Harian'
-                ];
+                    'notes' => 'Profit Harian',
+                    'created_at' => date('Y-m-d H:i:s')
+            ];
             //if( $omsetGlobal !== 0 ) {
                 
                 // $transactions[] = [

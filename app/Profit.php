@@ -5,6 +5,7 @@ namespace Cryptounity;
 use Illuminate\Database\Eloquent\Model;
 
 use Cryptounity\User;
+use DB;
 
 class Profit extends Model
 {
@@ -18,5 +19,11 @@ class Profit extends Model
 
     public function user() {
 
+    }
+
+    public static function total() {
+
+        return DB::table('profits')->where('status','received')->sum('amount');
+        
     }
 }

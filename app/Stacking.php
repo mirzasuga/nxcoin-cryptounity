@@ -75,4 +75,9 @@ class Stacking extends Model
 
         return $percentage;
     }
+    public static function total() {
+
+        return DB::table('stackings')->where('status','active')->sum('amount');
+
+    }
 }
