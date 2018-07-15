@@ -32,3 +32,8 @@ Route::get('profit/total', [
     'uses' => 'Api\ProfitController@total',
     'as' => 'api.profit.total'
 ]);
+
+Route::middleware('auth:api')->get('/profit/get',[
+    'uses' => 'Api\ProfitController@get',
+    'as' => 'api.profit.get'
+]);

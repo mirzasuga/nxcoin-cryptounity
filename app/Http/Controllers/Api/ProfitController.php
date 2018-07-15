@@ -30,4 +30,16 @@ class ProfitController extends Controller
         }
 
     }
+
+    public function get() {
+        $user = auth()->user();
+        $totalProfit = $user->profits()->status('received')->sum('amount');
+        return response()->json([
+            'success' => 1,
+            'msg' => true,
+            'data' => [
+                'total_profit' => number_format($profits,4)
+            ]
+        ]);
+    }
 }

@@ -13,6 +13,8 @@ class DashboardController extends Controller
         $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
         $package = $user->package;
         $bonus = Bonus::totalBonus($user->id);
+        $totalProfit = $user->profits()->status('received')->sum('amount');
+
         if( !$wallet ) {
             session()->flash('alert',[
                 'level' => 'danger',
@@ -34,6 +36,7 @@ class DashboardController extends Controller
             'wallet' => $wallet,
             'package' => $package,
             'bonus' => $bonus,
+            'totalProfit' => $totalProfit
             
         ]);
     }

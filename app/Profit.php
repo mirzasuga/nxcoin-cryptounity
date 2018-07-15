@@ -26,4 +26,8 @@ class Profit extends Model
         return DB::table('profits')->where('status','received')->sum('amount');
         
     }
+
+    public function scopeStatus($query,$status) {
+        return $query->where('status',$status);
+    }
 }
