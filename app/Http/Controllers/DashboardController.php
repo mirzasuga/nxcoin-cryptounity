@@ -11,7 +11,7 @@ class DashboardController extends Controller
     public function index() {
         $user = auth()->user();
         $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
-        $package = $user->package;
+        //$package = $user->package;
         $bonus = Bonus::totalBonus($user->id);
         $totalProfit = $user->profits()->status('received')->sum('amount');
 
@@ -23,13 +23,13 @@ class DashboardController extends Controller
             return redirect()->route('wallet');
 
         }
-        if( !$package ) {
-            session()->flash('alert',[
-                'level' => 'danger',
-                'msg' => 'Add package first!'
-            ]);
-            return redirect()->route('package.index');
-        }
+        // if( !$package ) {
+        //     session()->flash('alert',[
+        //         'level' => 'danger',
+        //         'msg' => 'Add package first!'
+        //     ]);
+        //     return redirect()->route('package.index');
+        // }
 
         return view('dashboard.index',[
             'user' => $user,
