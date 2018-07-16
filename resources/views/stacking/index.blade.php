@@ -53,7 +53,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        
+                        @if(!empty($stackings))
                             <tr>
                                 <td>{{ $stackings->id }}</td>
                                 <td>{{ $stackings->amount }}</td>
@@ -64,7 +64,7 @@
                                     <a href="{{ route('stacking.terminate',['stackId' => $stackings->id]) }}" class="btn btn-danger">Terminate</a>
                                 </td>
                             </tr>
-                        
+                        @endif
                         </tbody>
                     </table>
                     
@@ -91,6 +91,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                        @if(!empty($stackings->profits))
                         @foreach( $stackings->profits as $profit )
                             <tr>
                                 <td>{{ $profit->id }}</td>
@@ -101,6 +102,7 @@
                                 
                             </tr>
                         @endforeach
+                        @endif
                         </tbody>
                     </table>
                     
