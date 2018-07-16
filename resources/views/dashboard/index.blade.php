@@ -64,7 +64,7 @@
                     <div class="progress-details d-flex align-items-end justify-content-between">
                         <div class="title">
                             <div class="icon"><i class="icon-user-1"></i></div><strong>Profit</strong>
-                            <!-- <a href="{{ route('bonus.taking') }}" class="btn btn-primary">Take Bonus</a> -->
+                            <a href="{{ route('profit.taking') }}" class="btn btn-primary">Take Profit</a>
                         </div>
                         
                         <div class="number dashtext-1">{{ number_format($totalProfit) }} NXCC</div>
