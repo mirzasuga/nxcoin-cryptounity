@@ -16,6 +16,7 @@ class CreateProfitsTable extends Migration
         Schema::create('profits', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
+            $table->integer('stacking_id');
             $table->string('type');
             $table->double('amount',30,8);
             $table->string('notes');

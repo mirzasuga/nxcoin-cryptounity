@@ -20,7 +20,7 @@ class ProfitCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'cryptounity:profit-check';
+    protected $signature = 'cryptounity:profit-check {--user=0}';
 
     /**
      * The console command description.
@@ -46,10 +46,19 @@ class ProfitCommand extends Command
      */
     public function handle()
     {
-        $stackings = Stacking::status('active')->get();
+        
+        if( $this->option('user') !== 0) {
+            
+            $stackings = Stacking::status('active')->where('user_id', $this->option('user') )->get();
+            //dd($stackings);
+        } else {
+
+            $stackings = Stacking::status('active')->get();
+
+        }
         
         if( !empty($stackings) ) {
-
+            
             $this->shareLateProfit( $stackings );
 
         } else {
@@ -71,7 +80,7 @@ class ProfitCommand extends Command
             // $stackingDate = new Carbon($stack->created_at);
             // $nowDate = Carbon::now();
 
-            $user = $stack->user;
+            $user = $stack->user()->first();
             $omsetGlobal = 0;
             // if( $user->star > 0 ) {
 
@@ -92,6 +101,7 @@ class ProfitCommand extends Command
             ];
             $profits = [
                     'user_id' => $user->id,
+                    'stacking_id' => $stack->id,
                     'type' => 'profit_harian',
                     'amount' => $profitHarian,
                     'status' => 'received',

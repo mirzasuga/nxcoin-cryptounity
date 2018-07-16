@@ -33,6 +33,10 @@ class Stacking extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function profits() {
+        return $this->hasMany(Profit::class,'stacking_id');
+    }
+
     
     public function scopeStatus($query, $status) {
 
@@ -46,12 +50,11 @@ class Stacking extends Model
 
     public function calcProfit( $stackAmount = null ) {
 
-        $amount = ($stackAmount === null) ? $this->amount : $stackAmount;
+        $amount = floatval(($stackAmount === null) ? $this->amount : $stackAmount);
 
         $percent = $this->decidePercentage( $amount );
 
-        $profitHarian = $amount * $percent / 100;
-        
+        $profitHarian = number_format($amount * $percent / 100,8);
         return $profitHarian;
         
 
@@ -59,17 +62,26 @@ class Stacking extends Model
 
     private function decidePercentage( $input ) {
 
-        $precision = 0.00001 ;
+        //$precision = 0.00001 ;
         $rangeArray = self::PROFIT_PERCENTAGE;
         $percentage = 0;
         foreach($rangeArray as $current) {
 
-            if( ($input - $current['min']) > $precision and ($input - $current['max']) <= $precision ) {
-                $percentage = $current['percent'];
-                break;
+            if( $input >= $current['min'] and $input <= $current['max'] ) {
+                return $percentage = floatval($current['percent']);
             } else if( $input > 10000000 ) {
-                $percentage = 1.1; //MAX PERCENTAGE
+                $percentage = 1.1; //MAX PERCENTAGE    
             }
+            // if( $input == 2501) { dd($input - $current['min']); }
+            // if( ($input - $current['min']) >= $precision and ($input - $current['max']) <= $precision ) {
+
+            //     $percentage = floatval($current['percent']);
+
+            //     break;
+
+            // } else if( $input > 10000000 ) {
+            //     $percentage = 1.1; //MAX PERCENTAGE
+            // }
 
         }
 
