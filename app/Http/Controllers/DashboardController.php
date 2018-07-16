@@ -34,7 +34,7 @@ class DashboardController extends Controller
         return view('dashboard.index',[
             'user' => $user,
             'wallet' => $wallet,
-            'package' => $package,
+            
             'bonus' => $bonus,
             'totalProfit' => $totalProfit
             
