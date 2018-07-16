@@ -87,7 +87,7 @@
         <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
             
             <ul class="list-group">
-                <li class="list-group-item">Package: {{$package->name}}</li>
+                
                 <li class="list-group-item">Name: {{$user->name}}</li>
                 <li class="list-group-item">Stacking Coin: {{ number_format($user->totalStack()) }}</li>
                 <li class="list-group-item">
