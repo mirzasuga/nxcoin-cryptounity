@@ -67,7 +67,7 @@
                             <a href="{{ route('profit.taking') }}" class="btn btn-primary">Take Profit</a>
                         </div>
                         
-                        <div class="number dashtext-1">{{ number_format($totalProfit) }} NXCC</div>
+                        <div class="number dashtext-1">{{ number_format($totalProfit,8) }} NXCC</div>
                         
                         
                 
