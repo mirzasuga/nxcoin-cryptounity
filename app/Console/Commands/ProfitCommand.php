@@ -47,7 +47,7 @@ class ProfitCommand extends Command
     public function handle()
     {
         
-        if( $this->option('user') !== 0) {
+        if( $this->option('user') != 0) {
             
             $stackings = Stacking::status('active')->where('user_id', $this->option('user') )->get();
             //dd($stackings);
@@ -56,7 +56,6 @@ class ProfitCommand extends Command
             $stackings = Stacking::status('active')->get();
 
         }
-        
         if( !empty($stackings) ) {
             
             $this->shareLateProfit( $stackings );

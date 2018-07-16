@@ -53,16 +53,52 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach( $stackings as $stack )
+                        
                             <tr>
-                                <td>{{ $stack->id }}</td>
-                                <td>{{ $stack->amount }}</td>
-                                <td>{{ $stack->status }}</td>
-                                <!-- <td>{{ $stack->stop_at }}</td> -->
-                                <td>{{ $stack->created_at }}</td>
+                                <td>{{ $stackings->id }}</td>
+                                <td>{{ $stackings->amount }}</td>
+                                <td>{{ $stackings->status }}</td>
+                                <!-- <td>{{ $stackings->stop_at }}</td> -->
+                                <td>{{ $stackings->created_at }}</td>
                                 <td>
-                                    <a href="{{ route('stacking.terminate',['stackId' => $stack->id]) }}" class="btn btn-danger">Terminate</a>
+                                    <a href="{{ route('stacking.terminate',['stackId' => $stackings->id]) }}" class="btn btn-danger">Terminate</a>
                                 </td>
+                            </tr>
+                        
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-header">Profit History</div>
+
+                <div class="card-body">
+                    
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <!-- <th>Stop At</th> -->
+                                <th>Created At</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach( $stackings->profits as $profit )
+                            <tr>
+                                <td>{{ $profit->id }}</td>
+                                <td>{{ $profit->amount }}</td>
+                                <td>{{ $profit->status }}</td>
+                                <!-- <td>{{ $profit->stop_at }}</td> -->
+                                <td>{{ $profit->created_at }}</td>
+                                
                             </tr>
                         @endforeach
                         </tbody>
@@ -72,7 +108,6 @@
             </div>
         </div>
     </div>
-
 
 </div>
 @endsection

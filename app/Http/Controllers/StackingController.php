@@ -40,7 +40,8 @@ class StackingController extends Controller
         //     ]);
         //     return redirect()->route('package.index');
         // }
-        $stackings = $user->stackings()->where('status','active')->get();
+        $stackings = $user->stackings()->with('profits')->where('status','active')->first();
+
         return view('stacking.index',[
             'stackings' => $stackings,
             'user' => $user
