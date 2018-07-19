@@ -22,6 +22,7 @@ class CreateStackingsTable extends Migration
             $table->float('termin_fee_percent',8,2);
             $table->double('termin_fee_amount', 30, 8);
             $table->dateTimeTz('stop_at');
+            $table->dateTimeTz('terminate_at')->nullable();
             $table->timestamps();
         });
     }

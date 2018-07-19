@@ -163,6 +163,7 @@ class StackingController extends Controller
 
         
         $stack->status = 'pending-terminate';
+        $stack->terminate_at = date('Y-m-d');
         $terminFee = $stack->amount * 5 / 100;
         $amount = $stack->amount - $terminFee;
         $stack->save();

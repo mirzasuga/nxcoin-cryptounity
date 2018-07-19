@@ -92,4 +92,15 @@ class Stacking extends Model
         return DB::table('stackings')->where('status','active')->sum('amount');
 
     }
+
+    public function scopePendingTerminate($query) {
+
+        return $query->where('status','pending-terminate');
+
+    }
+    public function scopeIsNowTime($query) {
+        $now = date('Y-m-d H:i:s');
+        
+        return $query->whereRaw('TIMESTAMPDIFF(DAY, terminate_at, NOW() ) >= 2');
+    }
 }

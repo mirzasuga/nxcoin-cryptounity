@@ -87,5 +87,5 @@ class NxccApiService
         Log::error($message);
     }
 
-
+    
 }

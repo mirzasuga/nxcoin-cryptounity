@@ -11,9 +11,13 @@ use Cryptounity\Stacking;
 use Cryptounity\Transaction;
 use Cryptounity\Profit;
 use Cryptounity\Service\WalletService;
-
 use DB;
 use Log;
+
+/**
+ * NXCOIN
+ */
+use Cryptounity\NXC\NxcUser;
 
 class User extends Authenticatable
 {
@@ -56,6 +60,8 @@ class User extends Authenticatable
     public function profits() {
         return $this->hasMany(Profit::class,'user_id');
     }
+
+    
 
     public function subscribe( Package $package, WalletService $walletService ) {
         DB::beginTransaction();
