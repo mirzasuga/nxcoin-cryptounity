@@ -20,4 +20,11 @@ class NxcCoin extends Model
         'coin_txid'
     ];
     public $timestamps = false;
+
+    public static function total($userId) {
+        $received = self::where('coin_from',$userId)->sum('coin_amount');
+        $sent = self::where('coin_to', $userId)->sum('coin_amount');
+        return $sent - $received;
+    }
+
 }

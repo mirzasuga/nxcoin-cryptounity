@@ -5,6 +5,8 @@ namespace Cryptounity\Http\Controllers;
 use Illuminate\Http\Request;
 use Cryptounity\Bonus;
 use Cryptounity\User;
+use Cryptounity\NXC\NxcUser;
+use Cryptounity\NXC\NxcCoin;
 
 class DashboardController extends Controller
 {
@@ -14,6 +16,7 @@ class DashboardController extends Controller
         //$package = $user->package;
         $bonus = Bonus::totalBonus($user->id);
         $totalProfit = $user->profits()->status('received')->sum('amount');
+        
 
         if( !$wallet ) {
             session()->flash('alert',[
@@ -30,13 +33,23 @@ class DashboardController extends Controller
         //     ]);
         //     return redirect()->route('package.index');
         // }
-
+        $nxcUser = NxcUser::findByWallet( $wallet->address );
+        if(!$nxcUser) {
+            session()->flash('alert',[
+                'level' => 'danger',
+                'msg' => 'Please maksure your wallet address and password is correct'
+            ]);
+            return redirect()->route('wallet');
+        }
+        $nxcBalance = NxcCoin::total($nxcUser->id);
+        
         return view('dashboard.index',[
             'user' => $user,
             'wallet' => $wallet,
             
             'bonus' => $bonus,
-            'totalProfit' => $totalProfit
+            'totalProfit' => $totalProfit,
+            'nxcBalance' => $nxcBalance
             
         ]);
     }

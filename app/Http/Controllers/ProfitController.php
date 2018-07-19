@@ -8,11 +8,15 @@ use Cryptounity\Service\NxccWallet;
 
 use Cryptounity\Profit;
 use Cryptounity\Transaction;
+
+use Cryptounity\NXC\NxcCoin;
+use Cryptounity\NXC\NxcUser;
 use DB;
 class ProfitController extends Controller
 {
     public function take() {
-        DB::beginTransaction();
+        DB::connection('mysql')->beginTransaction();
+        DB::connection('nxc_mysql')->beginTransaction();
 
         $user           = auth()->user();
         $userWallet     = $user->wallets()->where('code', 'NXCC')->first();
@@ -42,14 +46,6 @@ class ProfitController extends Controller
         $key = env('ADMIN_NXCC_WALLET_KEY');
         $receiverAddress = $userWallet->address;
 
-        $nxccWallet = new NxccWallet($address,$receiverAddress, $key);
-        if(!$taked) {
-            session()->flash('alert',[
-                'level' => 'danger',
-                'msg' => 'Taking bonus fail, please contact web admin'
-            ]);
-            return redirect()->back();
-        }
         $transaction = Transaction::create([
             'receiver_id' => $user->id,
             'sender_id' => 1,
@@ -61,25 +57,72 @@ class ProfitController extends Controller
         if(!$transaction) {
             session()->flash('alert',[
                 'level' => 'danger',
-                'msg' => 'Taking bonus fail, please contact web admin'
+                'msg' => 'Taking profit fail, please send detail information to support@cryptounity.co'
             ]);
             return redirect()->back();
         }
-        $response = $nxccWallet->credit($profitAmount)->getResponse();
-        if( !$response->success ) {
+        $nxcUser = NxcUser::findByWallet( $userWallet->address );
+
+        if( !$nxcUser ) {
             session()->flash('alert',[
                 'level' => 'danger',
-                'msg' => $response->msg
+                'msg' => 'Wallet not found, please makesure your wallet address and password is correct'
             ]);
             return redirect()->back();
         }
-
+        NxcCoin::create([
+            'coin_from' => 1,
+            'coin_to' => $nxcUser->id,
+            'coin_amount' => $profitAmount,
+            'coin_date' => date('Y-m-d H:i:s'),
+            'coin_txid' => hash('sha256', str_random(30))
+        ]);
+        
+        DB::connection('mysql')->commit();
+        DB::connection('nxc_mysql')->commit();
         session()->flash('alert',[
             'level' => 'success',
-            'msg' => 'Taking bonus success'
+            'msg' => 'Taking profit success'
         ]);
-        DB::commit();
         return redirect()->back();
+        // $nxccWallet = new NxccWallet($address,$receiverAddress, $key);
+        // if(!$taked) {
+        //     session()->flash('alert',[
+        //         'level' => 'danger',
+        //         'msg' => 'Taking bonus fail, please contact web admin'
+        //     ]);
+        //     return redirect()->back();
+        // }
+        // $transaction = Transaction::create([
+        //     'receiver_id' => $user->id,
+        //     'sender_id' => 1,
+        //     'creator_id' => 1,
+        //     'amount' => $profitAmount,
+        //     'type' => 'credit',
+        //     'notes' => 'Profit Taking',
+        // ]);
+        // if(!$transaction) {
+        //     session()->flash('alert',[
+        //         'level' => 'danger',
+        //         'msg' => 'Taking bonus fail, please contact web admin'
+        //     ]);
+        //     return redirect()->back();
+        // }
+        // $response = $nxccWallet->credit($profitAmount)->getResponse();
+        // if( !$response->success ) {
+        //     session()->flash('alert',[
+        //         'level' => 'danger',
+        //         'msg' => $response->msg
+        //     ]);
+        //     return redirect()->back();
+        // }
+
+        // session()->flash('alert',[
+        //     'level' => 'success',
+        //     'msg' => 'Taking bonus success'
+        // ]);
+        // DB::commit();
+        // return redirect()->back();
     }
 
 }

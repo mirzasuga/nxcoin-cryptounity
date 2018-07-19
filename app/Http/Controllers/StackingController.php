@@ -15,6 +15,11 @@ use DB;
 use Carbon;
 use Log;
 use Auth;
+
+// NXCOIN
+use Cryptounity\NXC\NxcUser;
+use Cryptounity\NXC\NxcCoin;
+
 class StackingController extends Controller
 {
 
@@ -59,9 +64,11 @@ class StackingController extends Controller
 
         $data = $request->validated();
         
-        DB::beginTransaction();
+        DB::connection('mysql')->beginTransaction();
+        DB::connection('nxc_mysql')->beginTransaction();
         
-            
+        try {
+
             $user = auth()->user();
             
             $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
@@ -77,45 +84,34 @@ class StackingController extends Controller
             $address = $wallet->address;
             $privateKey = $wallet->private_key;
             
-            $receiverAddress = env('ADMIN_NXCC_WALLET_ADDRESS');
+            $amount = (double) $request->amount;
 
-            $nxccApiService = new NxccApiService($address, $privateKey);
-
-            $nxccWallet = new NxccWallet($address, $receiverAddress, $privateKey);
-            $amount = (float) $request->amount;
-
+            $nxcUser = NxcUser::findByWallet( $address );
             
-            $response = $nxccWallet->debit( $amount )->getResponse();
-            
-            if( !$response->success ) {
+            if(!$nxcUser) {
                 session()->flash('alert',[
                     'level' => 'danger',
-                    'msg' => $response->msg
+                    'msg' => 'Please makesure your wallet address and nxcoin password is correct.'
                 ]);
-                Log::info('User Stacking FAILED | USER ID:'.$user->id.' Email: '.$user->email.' Amount: '.$amount.' User level: '.$user->level);
                 return redirect()->back();
             }
-
-            // $pack = $user->package;
+            $totalNxcCoin = NxcCoin::total( $nxcUser->id );
             
-            // $min = $pack->min_deposit;
-            // $max = $pack->max_deposit;
-            $userStack = $user->totalStack() + $amount;
+            if( number_format($amount,8) > number_format($totalNxcCoin,8) ) {
+                session()->flash('alert',[
+                    'level' => 'danger',
+                    'msg' => 'Not enough NX Coin, your current balance is: '.$totalNxcCoin.' NXCC'
+                ]);
+                return redirect()->back();
+            }
             
-
-            $stop_at = new Carbon();
-            $stop_at = $stop_at->addDays(30);
-            
-            $stacking = Stacking::create([
+            Stacking::create([
                 'user_id' => $user->id,
                 'amount' => $amount,
                 'status' => 'active',
-                'type' => 'credit',
-                'termin_fee_percent' => 0,
-                'termin_fee_amount' => 0,
-                'stop_at' => $stop_at,
+                'type' => 'credit'
             ]);
-            $transaction = Transaction::create([
+            Transaction::create([
                 'receiver_id' => 1,
                 'sender_id' => $user->id,
                 'creator_id' => $user->id,
@@ -123,26 +119,40 @@ class StackingController extends Controller
                 'type' => 'debit',
                 'notes' => 'Stacking',
             ]);
-            
+            NxcCoin::create([
+                'coin_from' => $nxcUser->id,
+                'coin_to' => 1,
+                'coin_amount' => $amount,
+                'coin_date' => date('Y-m-d H:i:s'),
+                'coin_txid' => hash('sha256', str_random(30))
+            ]);
+
             Bonus::send($user, $amount);
 
-            if( !$stacking || !$transaction) {
+        } catch( \Exception $e ) {
 
-                session()->flash('alert',[
-                    'level' => 'danger',
-                    'msg' => 'Stacking failed, please contact web admin'
-                ]);
+            session()->flash('alert',[
+                'level' => 'danger',
+                'msg' => 'Stacking failed, please send detail information to support@cryptounity.co'
+            ]);
+            
+            Log::error( $e->getMessage() );
+            DB::connection('mysql')->rollBack();
+            DB::connection('nxc_mysql')->rollBack();
 
-                return redirect()->back();
-            }
-            Log::info('User Stacking| USER ID:'.$user->id.' Email'.$user->email.' Amount: '.$amount.' User level: '.$user->level);
+            return redirect()->back();
+        }
 
-        
+        DB::connection('mysql')->commit();
+        DB::connection('nxc_mysql')->commit();
+
         session()->flash('alert',[
             'level' => 'success',
             'msg' => 'Stacking success'
         ]);
-        DB::commit();
+
+        Log::info('User Stacking| USER ID:'.$user->id.' Email'.$user->email.' Amount: '.$amount.' User level: '.$user->level.' STATUS:SUCCESS!');
+        
         return redirect()->back();
     }
 
@@ -167,35 +177,7 @@ class StackingController extends Controller
         $terminFee = $stack->amount * 5 / 100;
         $amount = $stack->amount - $terminFee;
         $stack->save();
-        // Transaction::create([
-        //     'receiver_id' => $auth->id,
-        //     'sender_id' => 1,
-        //     'creator_id' => $auth->id,
-        //     'amount' => $amount,
-        //     'type' => 'credit',
-        //     'notes' => 'Stacking Termination',
-        // ]);
-
-        // $address = env('ADMIN_NXCC_WALLET_ADDRESS'); //admin wallet address
-        // $key = env('ADMIN_NXCC_WALLET_KEY');
-        // $privateKey = $key; // admin wallet key
         
-        // $receiverAddress = $auth->wallets()->where(['code' => 'NXCC'])->first()->address;
-        // $nxccWallet = new NxccWallet($address, $receiverAddress, $privateKey);
-        
-        // $response = $nxccWallet->credit($amount)->getResponse();
-        
-        
-        // if(!$response->success) {
-
-        //     session()->flash('alert',[
-        //         'level' => 'danger',
-        //         'msg' => $response->msg
-        //     ]);
-        //     return redirect()->route('stacking');
-
-        // }
-
         DB::commit();
         session()->flash('alert',[
             'level' => 'success',
