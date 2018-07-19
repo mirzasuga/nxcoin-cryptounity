@@ -84,10 +84,10 @@ class StackingController extends Controller
             $address = $wallet->address;
             $privateKey = $wallet->private_key;
             
-            $amount = (double) $request->amount;
+            $amount = $request->amount;
+            $amount = (double) $amount;
 
             $nxcUser = NxcUser::findByWallet( $address );
-            
             if(!$nxcUser) {
                 session()->flash('alert',[
                     'level' => 'danger',
@@ -96,8 +96,9 @@ class StackingController extends Controller
                 return redirect()->back();
             }
             $totalNxcCoin = NxcCoin::total( $nxcUser->id );
-            
-            if( number_format($amount,8) > number_format($totalNxcCoin,8) ) {
+            $totalNxcCoin = (double) $totalNxcCoin;
+
+            if( $amount > $totalNxcCoin ) {
                 session()->flash('alert',[
                     'level' => 'danger',
                     'msg' => 'Not enough NX Coin, your current balance is: '.$totalNxcCoin.' NXCC'
