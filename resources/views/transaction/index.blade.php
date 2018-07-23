@@ -42,7 +42,9 @@
                         @endforeach
                         </tbody>
                     </table>
-                    {{ $transactions->links() }}
+                    @if(!empty($transactions))
+                        {{ $transactions->links() }}
+                    @endif
                 </div>
             </div>
         </div>
