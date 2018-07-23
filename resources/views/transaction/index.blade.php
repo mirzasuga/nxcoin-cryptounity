@@ -17,8 +17,9 @@
                 <div class="card-header">Transaction History</div>
 
                 <div class="card-body">
-
-                    <table class="table table-hover">
+                    
+                    
+                    <table class="table table-hover table-responsive">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -40,8 +41,10 @@
                                 <td>{{ $trans->created_at }}</td>
                             </tr>
                         @endforeach
+                        
                         </tbody>
                     </table>
+                    
                     @if(!empty($transactions))
                         {{ $transactions->links() }}
                     @endif
