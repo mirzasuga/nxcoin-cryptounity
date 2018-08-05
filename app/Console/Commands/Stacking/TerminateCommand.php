@@ -86,17 +86,17 @@ class TerminateCommand extends Command
                     Log::error('User email: '.$user->email.' NXC USER not found!');
                     continue;
                 }
-                
                 DB::beginTransaction();
                 $terminFee = $stack->amount * 0.5 / 100;
-                $amount = number_format($stack->amount - $terminFee,8);
+                $amount = $stack->amount - $terminFee;
                 $coinCreated = NxcCoin::create([
                     'coin_from' => 1,
                     'coin_to' => $nxcUser->id,
-                    'coin_amount' => $amount,
+                    'coin_amount' => "$amount",
                     'coin_date' => date('Y-m-d H:i:s'),
                     'coin_txid' => hash('sha256', str_random(30))
-                ]);
+                ])->toSql();
+                
                 $transactionCreated = Transaction::create([
                     'receiver_id' => $user->id,
                     'sender_id' => 1,
@@ -105,7 +105,7 @@ class TerminateCommand extends Command
                     'type' => 'credit',
                     'notes' => 'Staking Termination',
                 ]);
-
+                
                 if( !$coinCreated ) {
                     Log::error(__METHOD__." || $user->email Failed terminate-stack when coin creation");
                     continue;
@@ -117,7 +117,7 @@ class TerminateCommand extends Command
 
                 $stack->status = 'inactive';
                 $stack->save();
-
+                
                 DB::commit();
                 Log::info(__METHOD__." || Success terminate stacking: $user->email");
 
