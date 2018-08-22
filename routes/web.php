@@ -89,4 +89,9 @@ Route::group(['middleware' => 'auth'], function() {
         'as' => 'affiliate'
     ]);
 
+    Route::get('monitoring/user-balance', [
+        'uses' => 'MonitoringController@index',
+        'as' => 'monitoring.userBalance'
+    ]);
+
 });

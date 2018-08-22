@@ -15,12 +15,12 @@
     <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
     <ul class="list-unstyled">
             <li class="nav-item">
-                <a class="nav-link" href="dashboard">
+                <a class="nav-link" href="{{ route('dashboard') }}">
                 <i class="icon-home"></i>Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="home">
+                <a class="nav-link" href="{{ route('home') }}">
                     Home
                 </a>
             </li>
@@ -30,7 +30,7 @@
                 </a>
             </li> -->
             <li class="nav-item">
-                <a class="nav-link" href="stacking">
+                <a class="nav-link" href="{{ route('stacking') }}">
                     Deposit
                 </a>
             </li>
@@ -44,6 +44,14 @@
                     Affiliate
                 </a>
             </li>
+            @if( auth()->user()->email === 'irwan.satoto@gmail.com' )
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('monitoring.userBalance') }}">
+                    Monitoring Stackings Balance
+                </a>
+            </li>
+            @endif
+
             <!-- <li><a href="tables.html"> <i class="icon-grid"></i>Tables </a></li>
             <li><a href="charts.html"> <i class="fa fa-bar-chart"></i>Charts </a></li>
             <li><a href="forms.html"> <i class="icon-padnote"></i>Forms </a></li>

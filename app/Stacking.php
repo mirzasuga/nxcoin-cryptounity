@@ -103,4 +103,16 @@ class Stacking extends Model
         
         return $query->whereRaw('TIMESTAMPDIFF(DAY, terminate_at, NOW() ) >= 2');
     }
+
+    public static function listStackings() {
+        return DB::select(
+            DB::raw("
+            select u.email,u.username,sum(s.amount) as balance
+            from users u
+            join stackings s on u.id = s.user_id
+            where s.status='active'
+            group by s.user_id,u.email,u.username
+            order by balance desc
+        "));
+    }
 }

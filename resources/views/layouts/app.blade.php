@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="/vendor/css/custom.css">
     <!-- Favicon-->
     <link rel="shortcut icon" href="/favicon.ico">
+    @yield('inc_css')
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="/vendor/https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="/vendor/https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
@@ -145,5 +146,6 @@
     <script src="/vendor/vendor/jquery-validation/jquery.validate.min.js"></script>
     <script src="/vendor/js/charts-home.js"></script>
     <script src="/vendor/js/front.js"></script>
+    @yield('inc_js')
   </body>
 </html>
