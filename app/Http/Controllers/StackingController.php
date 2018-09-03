@@ -28,6 +28,7 @@ class StackingController extends Controller
     }
 
     public function index() {
+        return redirect()->route('dashboard');
         $user = auth()->user();
         $wallet = $user->wallets()->where(['code' => 'NXCC'])->first();
         
@@ -54,6 +55,7 @@ class StackingController extends Controller
     }
 
     public function create(StackingCreateRequest $request) {
+        return redirect()->route('dashboard');
         $user = Auth::user();
 
         if( !$user->can('create-stacking', Stacking::class) ) {

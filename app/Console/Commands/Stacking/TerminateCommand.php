@@ -162,7 +162,7 @@ class TerminateCommand extends Command
 
         foreach( $stackings as $stacking ) {
         
-            Mail::to('sugamirza2@gmail.com')
+            Mail::to($stacking->email)
             ->send( new BulkTerminated($stacking) );
             Log::channel('stack')->info('Email Sent To '. $stacking->email);
         
