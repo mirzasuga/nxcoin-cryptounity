@@ -51,18 +51,21 @@ Route::group(['middleware' => 'auth'], function() {
         'as' => 'wallet.update'
     ]);
 
-    Route::get('stacking', [
-        'uses' => 'StackingController@index',
-        'as' => 'stacking'
-    ]);
-    Route::post('stacking', [
-        'uses' => 'StackingController@create',
-        'as' => 'stacking.create'
-    ]);
-    Route::get('stacking/terminate/{stackId}', [
-        'uses' => 'StackingController@terminate',
-        'as' => 'stacking.terminate'
-    ]);
+    /**
+     * STACKING IS INACTIVE
+     */
+    // Route::get('stacking', [
+    //     'uses' => 'StackingController@index',
+    //     'as' => 'stacking'
+    // ]);
+    // Route::post('stacking', [
+    //     'uses' => 'StackingController@create',
+    //     'as' => 'stacking.create'
+    // ]);
+    // Route::get('stacking/terminate/{stackId}', [
+    //     'uses' => 'StackingController@terminate',
+    //     'as' => 'stacking.terminate'
+    // ]);
 
     Route::get('transactions',[
         'uses' => 'TransactionController@index',
