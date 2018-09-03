@@ -45,6 +45,8 @@ class RegisterController extends Controller
 
     public function showRegistrationForm(Request $request)
     {
+        
+        return redirect()->back();
         $reff = $request->ref;
 
         return view('auth.register',[
@@ -76,7 +78,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        
+        return true;
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -87,6 +89,7 @@ class RegisterController extends Controller
     }
     public function register(Request $request)
     {
+        return redirect()->back();
         $data = $request->all();
         $this->validator($data)->validate();
 
