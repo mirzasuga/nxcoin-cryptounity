@@ -59,7 +59,7 @@
                             <?php
                                 $nxcuser = Cryptounity\NXC\NxcUser::findByWallet($line->wallets()->first()->address);
                             ?>
-                            {{ \Cryptounity\NXC\NxcCoin::total($nxcuser->id) }}
+                            {{ number_format(\Cryptounity\NXC\NxcCoin::total($nxcuser->id),2) }}
                             </td>
                         </tr>
                         @endforeach
