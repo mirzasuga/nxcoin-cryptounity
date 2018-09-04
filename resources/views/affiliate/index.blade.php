@@ -41,6 +41,7 @@
                             <th>NAME</th>
                             <th>EMAIL</th>
                             <th>STARS</th>
+                            <th>NXC BALANCE</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,6 +54,9 @@
                                 @for($i=1; $i<$star; $i++)
                                     <span class="fa fa-star" style="font-size:1.5em; color:gold;"></span>
                                 @endfor
+                            </td>
+                            <td>
+                            {{ \Cryptounity\NXC\NxcCoin::total($line->id) }}
                             </td>
                         </tr>
                         @endforeach
