@@ -56,7 +56,10 @@
                                 @endfor
                             </td>
                             <td>
-                            {{ \Cryptounity\NXC\NxcCoin::total($line->id) }}
+                            <?php
+                                $nxcuser = Cryptounity\NXC\NxcUser::findByWallet($line->wallets()->first()->address);
+                            ?>
+                            {{ \Cryptounity\NXC\NxcCoin::total($nxcuser->id) }}
                             </td>
                         </tr>
                         @endforeach
